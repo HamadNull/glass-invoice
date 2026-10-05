@@ -1,0 +1,1053 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GlassCut IQ — تفصال الزجاج</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+:root{--blue:#16699f;--blue2:#0c456d;--bg:#f4f6f8;--card:#fff;--ink:#17232e;--muted:#71808c;--line:#dce3e9;--green:#087c59;--red:#b53737}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}
+body{min-height:100vh}.app{max-width:1100px;margin:auto}
+.top{background:linear-gradient(135deg,var(--blue2),var(--blue));color:#fff;padding:13px 12px 10px;position:sticky;top:0;z-index:30;box-shadow:0 2px 12px #0002}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:8px}.logo{font-weight:900;font-size:21px}.jobmini{font-size:11px;opacity:.82;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%}
+.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:11px}.nav button{border:0;border-radius:9px;background:#ffffff18;color:#fff;padding:9px 3px;font-size:12px;font-weight:800}.nav button.active{background:#fff;color:var(--blue2)}
+main{padding:12px 10px 75px}.page{display:none}.page.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:11px;box-shadow:0 2px 10px #00000008}
+h2{font-size:18px;margin:0 0 12px}h3{font-size:14px;margin:15px 0 8px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+label{font-size:11px;font-weight:800;color:#465663;display:block;margin-bottom:5px}input,select,textarea{width:100%;font:inherit;border:1px solid #cdd7df;border-radius:10px;padding:10px;background:#fff;color:var(--ink);outline:none}textarea{min-height:72px;resize:vertical}
+button{font:inherit;border:0;border-radius:10px;padding:10px 12px;background:var(--blue);color:#fff;font-weight:800;cursor:pointer}.green{background:var(--green)}.red{background:var(--red)}.gray{background:#667684}.light{background:#eaf3f8;color:#145b86}.outline{background:#fff;color:var(--blue);border:1px solid #b9cbd7}
+.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.actions4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.hint{font-size:11px;color:var(--muted);line-height:1.55;margin-top:7px}.bigstart{text-align:center;padding:30px 15px}.bigstart .icon{font-size:45px}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:center}th{background:#f4f7f9}.empty{text-align:center;padding:18px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.stat{background:#f5f8fa;border-radius:11px;padding:10px;text-align:center}.stat span{display:block;font-size:10px;color:var(--muted)}.stat b{display:block;font-size:17px;margin-top:4px}
+.layer{background:#fff;border:1px solid var(--line);border-radius:15px;margin:12px 0;padding:10px}.layerhead{display:flex;justify-content:space-between;align-items:center;gap:6px}.layername{font-weight:900}.layerstats{font-size:10px;color:var(--muted)}
+.toolbar{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin:8px 0}.toolbar button{padding:7px 10px;font-size:12px}.zoomval{font-weight:900;font-size:12px;min-width:45px;text-align:center}
+.canvasbox{background:#e8edf1;border-radius:11px;padding:10px;overflow:auto;text-align:center}.sheetcanvas{display:block;margin:auto;background:#fff;touch-action:none;max-width:none}
+.layeractions{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px}.layeractions button{font-size:11px;padding:8px 4px}
+.pill{display:inline-block;padding:3px 9px;border-radius:20px;background:#e8f1f8;color:#145b86;font-size:11px;font-weight:800}
+#toast{display:none;position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#17232e;color:#fff;padding:10px 16px;border-radius:11px;font-size:13px;z-index:99;max-width:90%;text-align:center}
+.ov{position:fixed;inset:0;background:#000d;z-index:90;overflow:auto}.ov img{display:block;width:100%;max-width:900px;margin:auto;background:#fff}
+.chip{display:inline-block;background:#fff7e0;border:1px solid #efd39b;color:#7a5200;border-radius:20px;padding:5px 11px;margin:3px;font-size:12px;font-weight:800}
+details{margin:8px 0}summary{cursor:pointer;font-weight:800;font-size:13px;color:var(--blue2)}.cuts{font-size:12px;line-height:2;padding:4px 8px;columns:2}
+.proj{display:flex;justify-content:space-between;align-items:center;gap:8px;border:1px solid var(--line);border-radius:11px;padding:9px;margin-top:7px}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:8px;z-index:25}.bottomin{max-width:1100px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* ===== شريط أدوات العرض (View Toolbar) ===== */
+.view-toolbar{
+  display:flex;align-items:center;gap:2px;padding:6px 8px;
+  background:#fff;border:1px solid var(--line);border-radius:12px;
+  margin-bottom:10px;flex-wrap:wrap;position:sticky;top:0;z-index:20;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+.view-toolbar .vbtn{
+  width:34px;height:34px;border:0;background:transparent;color:#546E7A;
+  border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;padding:0;
+}
+.view-toolbar .vbtn:hover{background:#ECEFF1;color:#263238}
+.view-toolbar .vbtn.active{background:#E3F2FD;color:#1565C0}
+.view-toolbar .vbtn.disabled{opacity:.35;cursor:not-allowed}
+.view-toolbar .vbtn .material-icons{font-size:20px}
+.view-toolbar .vbtn .aa{font-weight:900;font-size:15px;letter-spacing:-1px;font-family:Georgia,serif}
+.view-toolbar .sep{width:1px;height:22px;background:#CFD8DC;margin:0 4px}
+.view-toolbar .vlabel{font-size:10px;color:#90A4AE;padding:0 5px;font-weight:700;min-width:42px;text-align:center}
+
+@media(max-width:700px){.grid4{grid-template-columns:1fr 1fr}.actions4{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.nav button{font-size:11px}.grid,.grid4{grid-template-columns:1fr 1fr}.actions4{grid-template-columns:1fr 1fr}.layeractions{grid-template-columns:repeat(2,1fr)}.card{padding:11px}.cuts{columns:1}
+.view-toolbar{padding:4px}.view-toolbar .vbtn{width:30px;height:30px}.view-toolbar .vbtn .material-icons{font-size:17px}.view-toolbar .sep{margin:0 2px}
+}
+@media print{.top,.bottom,.no-print,.view-toolbar{display:none!important}}
+</style>
+</head>
+<body>
+<div class="top">
+ <div class="app topline"><div class="logo">GlassCut IQ</div><div class="jobmini" id="jobMini">مشروع جديد</div></div>
+ <div class="app nav">
+  <button id="n1" class="active" onclick="go(1)">بيانات الزبون</button>
+  <button id="n2" onclick="go(2)">التفصال</button>
+  <button id="n3" onclick="go(3)">النتيجة والطباعة</button>
+ </div>
+</div>
+
+<main class="app">
+
+<section id="p1" class="page active">
+ <div class="card bigstart">
+  <div class="icon">🪟</div><h2>مشروع تفصال زجاج جديد</h2>
+  <p class="hint">أدخل بيانات المحل والزبون، وبعدها انتقل لصفحة التفصال.</p>
+  <div style="margin-top:22px;padding-top:16px;border-top:1px dashed #cdd7df">
+    <div style="font-size:15px;font-weight:900;color:var(--blue2);letter-spacing:.2px">
+      المهندس محمد النعيمي
+      <span style="font-size:11px;color:var(--muted);font-weight:600">© 2026</span>
+    </div>
+    <div style="font-size:14px;font-weight:800;color:var(--blue);margin-top:4px;direction:ltr;display:inline-block">
+      0772 845 9000
+    </div>
+  </div>
+ </div>
+ <div class="card">
+  <h2>بيانات المحل</h2>
+  <div class="grid">
+   <div><label>اسم المحل</label><input id="shop" placeholder="مثال: محل محمد للزجاج"></div>
+   <div><label>رقم الهاتف</label><input id="shopPhone" placeholder="اختياري"></div>
+  </div>
+  <h3>بيانات الزبون</h3>
+  <div class="grid">
+   <div><label>اسم الزبون</label><input id="customer" placeholder="اسم الزبون"></div>
+   <div><label>رقم الهاتف</label><input id="customerPhone" placeholder="اختياري"></div>
+  </div>
+  <div style="margin-top:9px"><label>عنوان الزبون</label><textarea id="address" placeholder="المحافظة، المنطقة، الشارع، رقم الدار..."></textarea></div>
+  <div class="grid" style="margin-top:9px">
+   <div><label>رقم الطلب</label><input id="orderNo" placeholder="مثال: 1025"></div>
+   <div><label>التاريخ</label><input id="date" type="date"></div>
+  </div>
+  <div class="grid" style="margin-top:9px">
+   <div><label>المادة</label><select id="material"><option>زجاج</option><option>مراية</option><option>زجاج مسكرت</option><option>أكريليك</option></select></div>
+   <div><label>السماكة</label><select id="thick"><option>4 ملم</option><option selected>6 ملم</option><option>10 ملم</option><option>12 ملم</option></select></div>
+  </div>
+ </div>
+ <div class="card">
+  <h2>المشاريع المحفوظة</h2>
+  <div class="actions"><button class="green" onclick="save()">حفظ المشروع الحالي</button><button class="outline" onclick="newProject()">مشروع جديد</button></div>
+  <div id="projList"></div>
+  <div class="hint">يتم حفظ مسودة تلقائيًا على هذا الجهاز أثناء الكتابة.</div>
+ </div>
+</section>
+
+<section id="p2" class="page">
+ <div class="card">
+  <h2>اللوح الخام</h2>
+  <div class="grid4">
+   <div><label>العرض سم</label><input id="sheetW" type="number" value="165"></div>
+   <div><label>الطول سم</label><input id="sheetH" type="number" value="225"></div>
+   <div><label>Kerf ملم</label><input id="kerf" type="number" value="0"></div>
+   <div><label>هامش الحافة سم</label><input id="trim" type="number" value="0"></div>
+  </div>
+  <div class="grid4" style="margin-top:9px">
+   <div><label>تدوير القطع</label><select id="rotation"><option value="yes" selected>نعم</option><option value="no">لا</option></select></div>
+   <div><label>أقل بقايا مفيدة سم</label><input id="minRem" type="number" value="20"></div>
+  </div>
+  <div class="hint">Kerf = 0 مناسب لقص الزجاج بالماس. التفصال بقصات كاملة من حافة لحافة (Guillotine).</div>
+ </div>
+
+ <div class="card">
+  <h2>إضافة القياسات</h2>
+  <div class="grid4">
+   <div><label>العرض سم</label><input id="pw" type="number" placeholder="55"></div>
+   <div><label>الطول سم</label><input id="ph" type="number" placeholder="66"></div>
+   <div><label>الكمية</label><input id="pq" type="number" value="1"></div>
+   <button onclick="addPart()">إضافة</button>
+  </div>
+  <h3>لصق قياسات متعددة</h3>
+  <textarea id="pasteBox" placeholder="مثال:&#10;55x66&#10;70x80 عدد 5&#10;٤٠×٧٢ - 3"></textarea>
+  <div class="actions" style="margin-top:8px">
+   <button class="gray" onclick="pasteMeasurements()">إضافة من النص</button>
+   <button class="light" onclick="demo()">قياسات تجريبية 🎲</button>
+  </div>
+  <div style="margin-top:8px"><button class="outline" style="width:100%" onclick="clearParts()">مسح كل القياسات</button></div>
+  <div class="hint">يقبل الأرقام العربية، وx أو × أو *، والكمية بعد «عدد» أو - أو :</div>
+  <div id="parts" style="margin-top:10px"></div>
+ </div>
+
+ <div class="card" style="background:linear-gradient(135deg,#eef8ff,#f7fbfd);border-color:#cfe5f3">
+  <h2>🔬 فحص المحرك الذاتي</h2>
+  <div class="actions">
+   <button class="green" id="btnSelfTest" onclick="runSelfTest(100)">فحص سريع (100 مرة)</button>
+   <button class="gray" onclick="runSelfTest(500)">فحص موسّع (500)</button>
+  </div>
+  <div id="selfTestResult" style="margin-top:10px"></div>
+  <div class="hint">يشغّل المحرك عشرات المرات على مقاسات عشوائية ويتحقق من: التداخل، الحدود، صحة القصات، ووضع كل القطع.</div>
+ </div>
+
+ <div class="card">
+  <button class="green" style="width:100%;padding:14px;font-size:16px" onclick="calculate()">🪚 حساب التفصال</button>
+ </div>
+</section>
+
+<section id="p3" class="page">
+ <div class="card">
+  <div class="actions4">
+   <button class="green" onclick="exportPDF()">تصدير PDF</button>
+   <button onclick="printAll()">طباعة الكل</button>
+   <button class="light" onclick="sharePDF()">مشاركة PDF</button>
+   <button class="gray" onclick="exportAllPNG()">حفظ كل الصور</button>
+  </div>
+ </div>
+ <div id="cutResults">
+  <div class="card empty">روح لصفحة «التفصال» واضغط «حساب التفصال».</div>
+ </div>
+</section>
+</main>
+
+<div class="bottom"><div class="bottomin app">
+ <button class="gray" id="btnPrev" onclick="prev()">السابق</button>
+ <button id="btnNext" onclick="next()">التالي</button>
+ <button class="green" id="btnNew" onclick="newProject()" style="display:none">🆕 مشروع جديد</button>
+</div></div>
+<div id="toast"></div>
+
+<script>
+const E=.001;
+let parts=[],layouts=[],geo=null,projKeys=[];
+
+/* ===== حالة العرض ===== */
+let viewState={
+  zoom:1,
+  fontScale:1,
+  rotationLocked:false,
+  showOuterDims:true,
+  showInnerDims:true,
+  showLabels:true,
+  colorScheme:'pastel',
+  showCutNumbers:false,
+  flipped:false
+};
+
+const $=id=>document.getElementById(id);
+const f1=x=>String(+(+x).toFixed(1));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const FIELDS=['shop','shopPhone','customer','customerPhone','address','orderNo','date','material','thick','sheetW','sheetH','kerf','trim','minRem','rotation'];
+function n(id){return Number($(id).value)||0}
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function toast(m,ms){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',ms||3500)}
+
+/* التنقل مع إخفاء/إظهار الأزرار حسب الصفحة */
+function go(i){
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+ const pg=$('p'+i);if(pg)pg.classList.add('active');
+ document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+ const nb=$('n'+i);if(nb)nb.classList.add('active');
+ $('jobMini').textContent=($('customer').value||'مشروع جديد')+' • '+($('orderNo').value||'بدون رقم');
+
+ /* الأزرار السفلية */
+ const bp=$('btnPrev'),bn=$('btnNext'),bnew=$('btnNew');
+ if(i===1){
+  if(bp)bp.style.display='none';
+  if(bn)bn.style.display='';
+  if(bnew)bnew.style.display='none';
+  const btm=document.querySelector('.bottomin');
+  if(btm)btm.style.gridTemplateColumns='1fr';
+ }else if(i===2){
+  if(bp)bp.style.display='';
+  if(bn)bn.style.display='';
+  if(bnew)bnew.style.display='none';
+  const btm=document.querySelector('.bottomin');
+  if(btm)btm.style.gridTemplateColumns='1fr 1fr';
+ }else if(i===3){
+  if(bp)bp.style.display='';
+  if(bn)bn.style.display='none';
+  if(bnew)bnew.style.display='';
+  const btm=document.querySelector('.bottomin');
+  if(btm)btm.style.gridTemplateColumns='1fr 1fr';
+ }
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function cur(){return [1,2,3].find(i=>$('p'+i).classList.contains('active'))||1}
+function next(){const a=cur();if(a<3)go(a+1)}
+function prev(){const a=cur();if(a>1)go(a-1)}
+
+/* ===== القياسات ===== */
+function addPartRaw(w,h,q){const k=parts.find(p=>p.w===w&&p.h===h);if(k)k.q+=q;else parts.push({w,h,q})}
+function addPart(){
+ const w=n('pw'),h=n('ph'),q=Math.floor(n('pq'))||1;
+ if(w<=0||h<=0||q<1)return toast('أدخل قياسات صحيحة.');
+ addPartRaw(w,h,q);renderParts();$('pw').value='';$('ph').value='';$('pq').value=1;$('pw').focus();dirty();
+}
+function del(i){parts.splice(i,1);renderParts();dirty()}
+function setQ(i,v){parts[i].q=Math.max(1,Math.floor(Number(v))||1);renderParts();dirty()}
+function clearParts(){if(parts.length&&confirm('مسح كل القياسات؟')){parts=[];renderParts();dirty()}}
+function renderParts(){
+ if(!parts.length){$('parts').innerHTML='<div class="empty">لا توجد قياسات. أضف القياسات أو استخدم القياسات التجريبية.</div>';return}
+ let tq=0,tf=0;
+ const rows=parts.map((p,i)=>{tq+=p.q;const ft=p.w*p.h*p.q/900;tf+=ft;return `<tr><td>${i+1}</td><td><bdi dir="ltr">${f1(p.w)} × ${f1(p.h)}</bdi></td><td><input type="number" min="1" value="${p.q}" style="width:64px;padding:5px;text-align:center" onchange="setQ(${i},this.value)"></td><td>${ft.toFixed(2)}</td><td><button class="red" style="padding:6px 8px" onclick="del(${i})">حذف</button></td></tr>`}).join('');
+ $('parts').innerHTML=`<table><thead><tr><th>#</th><th>المقاس (عرض × طول)</th><th>الكمية</th><th>فوت</th><th></th></tr></thead><tbody>${rows}<tr style="font-weight:900;background:#f4f7f9"><td colspan="2">المجموع</td><td>${tq}</td><td>${tf.toFixed(2)}</td><td></td></tr></tbody></table>`;
+}
+
+function demo(){
+ const SW=Math.max(20,n('sheetW')||165),SH=Math.max(20,n('sheetH')||225);
+ const rot=$('rotation').value==='yes';
+ const minDim=Math.min(SW,SH),maxDim=Math.max(SW,SH);
+ const minSize=Math.max(4,Math.min(10,minDim*0.08));
+ const existing=new Set();parts.forEach(p=>{existing.add(p.w+'x'+p.h);existing.add(p.h+'x'+p.w)});
+ const numTypes=4+Math.floor(Math.random()*5);
+ let added=0,attempts=0;
+ const gen=()=>{
+   const r=Math.random();let w,h;
+   if(r<0.25){w=Math.round(SW*(0.05+Math.random()*0.15));h=Math.round(SH*(0.05+Math.random()*0.15))}
+   else if(r<0.5){w=Math.round(SW*(0.15+Math.random()*0.2));h=Math.round(SH*(0.15+Math.random()*0.2))}
+   else if(r<0.75){w=Math.round(SW*(0.25+Math.random()*0.3));h=Math.round(SH*(0.25+Math.random()*0.3))}
+   else if(r<0.9){w=Math.round(SW*(0.45+Math.random()*0.35));h=Math.round(SH*(0.45+Math.random()*0.35))}
+   else{if(Math.random()<0.5){w=Math.round(SW*(0.08+Math.random()*0.15));h=Math.round(SH*(0.5+Math.random()*0.4))}else{w=Math.round(SW*(0.5+Math.random()*0.4));h=Math.round(SH*(0.08+Math.random()*0.15))}}
+   w=Math.max(minSize,Math.min(maxDim,w));h=Math.max(minSize,Math.min(maxDim,h));
+   return [w,h];
+ };
+ while(added<numTypes&&attempts<300){
+  attempts++;
+  let [w,h]=gen();
+  let fD=(w<=SW&&h<=SH),fR=rot&&(h<=SW&&w<=SH);
+  if(!fD&&!fR){[w,h]=[h,w];fD=(w<=SW&&h<=SH);fR=rot&&(h<=SW&&w<=SH);if(!fD&&!fR)continue}
+  if(existing.has(w+'x'+h))continue;
+  const q=1+Math.floor(Math.random()*4);
+  addPartRaw(w,h,q);existing.add(w+'x'+h);existing.add(h+'x'+w);added++;
+ }
+ if(added===0)return toast('ما قدرت أولّد قياسات جديدة.');
+ renderParts();dirty();toast('➕ أُضيفت '+added+' قياسات جديدة');
+}
+
+function normDigits(s){
+ return s.replace(/[٠-٩]/g,d=>d.charCodeAt(0)-1632).replace(/[۰-۹]/g,d=>d.charCodeAt(0)-1776).replace(/٫/g,'.').replace(/[×*X✕]/g,'x').replace(/[،,;؛\n\r\t]/g,' ');
+}
+function pasteMeasurements(){
+ const s=normDigits($('pasteBox').value||'');
+ const re=/(\d+(?:\.\d+)?)\s*x\s*(\d+(?:\.\d+)?)(?:\s*(?:[-–—:=]|عدد|كمية|qty|\()\s*(\d+)\)?)?/gi;
+ let m,c=0;
+ while((m=re.exec(s))){const w=+m[1],h=+m[2],q=+m[3]||1;if(w>0&&h>0){addPartRaw(w,h,q);c++}}
+ if(!c)return toast('ما لقيت قياسات.');
+ $('pasteBox').value='';renderParts();dirty();toast('تمت إضافة '+c+' قياس.');
+}
+function expand(){let a=[],id=1;parts.forEach((p,g)=>{for(let q=0;q<p.q;q++)a.push({id:id++,g:g+1,w:p.w,h:p.h})});return a}
+
+/* ===== محرك التفصيل ===== */
+function fitsSheet(it,W,H,rot){return (it.w<=W+E&&it.h<=H+E)||(rot&&it.h<=W+E&&it.w<=H+E)}
+const SORT_FNS=[
+  (a,b)=>b.w*b.h-a.w*a.h,
+  (a,b)=>Math.max(b.w,b.h)-Math.max(a.w,a.h),
+  (a,b)=>b.h-a.h||b.w-a.w,
+  (a,b)=>b.w-a.w||b.h-a.h,
+  (a,b)=>a.w*a.h-b.w*b.h,
+];
+const FIT_FNS=[
+  (dw,dh)=>(dw<=E||dh<=E)?-1e5+dw*dh:Math.max(dw,dh)*1000+Math.min(dw,dh),
+  (dw,dh)=>Math.max(dw,dh)*1000+Math.min(dw,dh),
+  (dw,dh)=>Math.min(dw,dh)*1000+Math.max(dw,dh),
+  (dw,dh)=>dw*dh,
+  (dw,dh)=>-dw*dh,
+];
+function packOneSheet(W,H,items,K,rot,sortFn,fitFn,splitPref){
+ const placed=[],cuts=[];
+ const free=[{x:0,y:0,w:W,h:H}];
+ const rem=items.slice();
+ if(sortFn)rem.sort(sortFn);
+ while(rem.length){
+  let best=null;
+  for(let i=0;i<rem.length;i++){
+   const it=rem[i];
+   const orients=(rot&&it.w!==it.h)?[[it.w,it.h,0],[it.h,it.w,90]]:[[it.w,it.h,0]];
+   for(const [w,h,r] of orients){
+    for(let j=0;j<free.length;j++){
+     const f=free[j];
+     if(w>f.w+E||h>f.h+E)continue;
+     const score=fitFn(f.w-w,f.h-h);
+     if(!best||score<best.score)best={i,j,w,h,r,score};
+    }
+   }
+  }
+  if(!best)break;
+  const it=rem[best.i],f=free[best.j],{w,h,r}=best;
+  placed.push({id:it.id,g:it.g,x:f.x,y:f.y,w,h,r});
+  free.splice(best.j,1);
+  const remainW=f.w-w,remainH=f.h-h;
+  if(splitPref==='H'){
+   if(remainH>K){cuts.push({d:'H',pos:f.y+h,len:f.w,x1:f.x,y1:f.y+h,x2:f.x+f.w,y2:f.y+h});free.push({x:f.x,y:f.y+h+K,w:f.w,h:remainH-K})}
+   if(remainW>K){cuts.push({d:'V',pos:f.x+w,len:h,x1:f.x+w,y1:f.y,x2:f.x+w,y2:f.y+h});free.push({x:f.x+w+K,y:f.y,w:remainW-K,h:h})}
+  }else{
+   if(remainW>K){cuts.push({d:'V',pos:f.x+w,len:f.h,x1:f.x+w,y1:f.y,x2:f.x+w,y2:f.y+f.h});free.push({x:f.x+w+K,y:f.y,w:remainW-K,h:f.h})}
+   if(remainH>K){cuts.push({d:'H',pos:f.y+h,len:w,x1:f.x,y1:f.y+h,x2:f.x+w,y2:f.y+h});free.push({x:f.x,y:f.y+h+K,w:w,h:remainH-K})}
+  }
+  rem.splice(best.i,1);
+ }
+ return {placed,free,cuts,remaining:rem};
+}
+function solve(items,W,H,K,rot,maxMs){
+ const t0=Date.now(),deadline=t0+(maxMs||3500);
+ let best=null,bestScore=Infinity,tried=0;
+ outer:
+ for(const sortFn of SORT_FNS){
+  for(const fitFn of FIT_FNS){
+   for(const splitPref of ['H','V']){
+    if(Date.now()>deadline)break outer;
+    tried++;
+    const sheets=[];
+    let rem=items.slice(),ok=true,guard=0;
+    while(rem.length&&guard++<500){
+     const r=packOneSheet(W,H,rem,K,rot,sortFn,fitFn,splitPref);
+     if(!r.placed.length){ok=false;break}
+     sheets.push({placed:r.placed,free:r.free,cuts:r.cuts});
+     rem=r.remaining;
+    }
+    if(!ok||rem.length)continue;
+    const placedArea=sheets.reduce((a,s)=>a+s.placed.reduce((z,p)=>z+p.w*p.h,0),0);
+    const totalArea=sheets.length*W*H;
+    const waste=totalArea-placedArea;
+    const lastFill=sheets[sheets.length-1].placed.reduce((a,p)=>a+p.w*p.h,0);
+    const score=sheets.length*1e9+waste*10-lastFill;
+    if(score<bestScore){bestScore=score;best=sheets}
+   }
+  }
+ }
+ if(best)best.tried=tried;
+ return best;
+}
+
+function calculate(){
+ if(!parts.length)return toast('أضف القياسات أولاً.');
+ const SW=n('sheetW'),SH=n('sheetH'),t=Math.max(0,n('trim')),W=SW-2*t,H=SH-2*t,K=Math.max(0,n('kerf'))/10,rot=$('rotation').value==='yes';
+ if(W<=0||H<=0)return alert('أبعاد اللوح أو الهامش غير صحيحة.');
+ const items=expand();
+ if(items.length>5000)return alert('عدد القطع كبير جداً (الحد الأقصى 5000).');
+ const bad=items.filter(it=>!fitsSheet(it,W,H,rot));
+ if(bad.length){const u=[...new Set(bad.map(b=>f1(b.w)+' × '+f1(b.h)))];return alert('القطع التالية أكبر من مساحة اللوح المتاحة '+f1(W)+' × '+f1(H)+' سم'+(rot?' حتى مع التدوير':'')+':\n'+u.join('\n')+(rot?'':'\nجرّب تفعيل تدوير القطع.'))}
+ toast('⏳ جاري حساب أفضل تفصال...');
+ setTimeout(()=>{
+  const sheets=solve(items,W,H,K,rot,3500);
+  if(!sheets)return alert('تعذر إيجاد تفصال للقطع. راجع المقاسات.');
+  const minR=n('minRem')||20;
+  layouts=sheets.map(s=>({
+   placed:s.placed,
+   used:s.placed.reduce((a,p)=>a+p.w*p.h,0),
+   cuts:{list:s.cuts,ok:true},
+   free:s.free.filter(f=>f.w>=minR&&f.h>=minR).sort((a,b)=>b.w*b.h-a.w*a.h)
+  }));
+  geo={SW,SH,t,W,H,K,tried:sheets.tried};
+  renderResults();go(3);dirty();
+  toast('✅ تم حساب التفصال ('+sheets.tried+' استراتيجية).');
+ },30);
+}
+
+/* ============================================================
+   الرسم — مع دعم viewState
+   ============================================================ */
+
+const COLOR_SCHEMES = {
+  pastel: ['#e6d4de','#d4e6ee','#dce6d0','#f0e2cc','#dcd4e6','#e6dccf','#d0e6d6','#f0d4d8','#d8e0ee','#e8e0d0'],
+  light:  ['#E3F2FD','#FFF3E0','#E8F5E9','#F3E5F5','#FFEBEE','#FFF9C4','#E0F2F1','#EDE7F6','#FCE4EC','#F1F8E9'],
+  dark:   ['#5C6BC0','#7E57C2','#42A5F5','#26A69A','#66BB6A','#FFA726','#EF5350','#EC407A','#8D6E63','#78909C'],
+  mono:   ['#ECEFF1','#CFD8DC','#B0BEC5','#90A4AE','#78909C','#607D8B','#546E7A','#455A64','#37474F','#263238']
+};
+
+function getColors(){return COLOR_SCHEMES[viewState.colorScheme]||COLOR_SCHEMES.pastel}
+
+function drawSheetEx(x, L, ox, oy, sw, sh, opts){
+  const g = geo;
+  opts = opts || {};
+  const vs = viewState;
+
+  let actualSW = g.SW, actualSH = g.SH;
+  let rotated = vs.rotationLocked;
+  if(rotated){
+    const tmp = actualSW; actualSW = actualSH; actualSH = tmp;
+  }
+  const sc = sw / actualSW;
+  let ux = ox + g.t * sc;
+  let uy = oy + g.t * sc;
+  let uw = g.W * sc;
+  let uh = g.H * sc;
+  if(rotated){
+    const tmp = uw; uw = uh; uh = tmp;
+    const tmpU = ux; ux = uy; uy = tmpU;
+  }
+
+  x.fillStyle = '#f2f2f2';
+  x.fillRect(ox, oy, sw, sh);
+
+  x.fillStyle = '#ffffff';
+  x.fillRect(ux, uy, uw, uh);
+
+  const colors = getColors();
+  L.placed.forEach(p => {
+    let px = p.x, py = p.y, pw = p.w, ph = p.h;
+    if(rotated){
+      const nx = p.y, ny = g.W - p.x - p.w;
+      px = nx; py = ny;
+      pw = p.h; ph = p.w;
+    }
+    const a = ux + px * sc, b = uy + py * sc;
+    const w = pw * sc, h = ph * sc;
+    x.fillStyle = colors[p.g % colors.length];
+    x.fillRect(a, b, w, h);
+    x.strokeStyle = '#000';
+    x.lineWidth = Math.max(0.8, sc / 12);
+    x.strokeRect(a, b, w, h);
+  });
+
+  x.save();
+  x.beginPath(); x.rect(ux, uy, uw, uh); x.clip();
+  L.free.forEach(f => {
+    let fx = f.x, fy = f.y, fw = f.w, fh = f.h;
+    if(rotated){
+      const nx = f.y, ny = g.W - f.x - f.w;
+      fx = nx; fy = ny; fw = f.h; fh = f.w;
+    }
+    const a = ux + fx * sc, b = uy + fy * sc;
+    const w = fw * sc, h = fh * sc;
+    x.strokeStyle = '#bbb'; x.setLineDash([3,3]); x.lineWidth = 1;
+    x.strokeRect(a, b, w, h);
+    x.setLineDash([]);
+  });
+  x.restore();
+
+  x.strokeStyle = '#000';
+  x.lineWidth = Math.max(1.5, sc / 8);
+  x.strokeRect(ox, oy, sw, sh);
+
+  if(vs.showInnerDims){
+    const innerColor = '#7a9db5';
+    const innerFs = Math.max(11, Math.min(16, sc * 5.5 * vs.fontScale));
+    x.font = innerFs + 'px Arial';
+    x.fillStyle = innerColor;
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    const wDim = rotated ? g.H : g.W;
+    const hDim = rotated ? g.W : g.H;
+    x.fillText(f1(wDim), ux + uw / 2, uy + innerFs * 0.85);
+    x.save();
+    x.translate(ux + uw - innerFs * 0.85, uy + uh / 2);
+    x.rotate(-Math.PI / 2);
+    x.fillText(f1(hDim), 0, 0);
+    x.restore();
+  }
+
+  if(vs.showLabels){
+    L.placed.forEach(p => {
+      let px = p.x, py = p.y, pw = p.w, ph = p.h;
+      if(rotated){
+        const nx = p.y, ny = g.W - p.x - p.w;
+        px = nx; py = ny; pw = p.h; ph = p.w;
+      }
+      const a = ux + px * sc, b = uy + py * sc;
+      const w = pw * sc, h = ph * sc;
+      const wStr = f1(p.w), hStr = f1(p.h);
+
+      const fsW = Math.min(11 * vs.fontScale, w / 4, h / 4);
+      const fsH = Math.min(11 * vs.fontScale, h / 4, w / 4);
+
+      if (fsW >= 6) {
+        x.font = fsW + 'px Arial';
+        x.textAlign = 'center'; x.textBaseline = 'top';
+        const tw = x.measureText(wStr).width;
+        x.fillStyle = 'rgba(255,255,255,0.85)';
+        x.fillRect(a + w / 2 - tw / 2 - 2, b + 1, tw + 4, fsW + 3);
+        x.fillStyle = '#000';
+        x.fillText(wStr, a + w / 2, b + 2);
+      }
+      if (fsH >= 6) {
+        x.save();
+        x.font = fsH + 'px Arial';
+        const th = x.measureText(hStr).width;
+        x.fillStyle = 'rgba(255,255,255,0.85)';
+        x.fillRect(a + 1, b + h / 2 - th / 2 - 2, fsH + 3, th + 4);
+        x.translate(a + 2 + fsH / 2, b + h / 2);
+        x.rotate(-Math.PI / 2);
+        x.fillStyle = '#000'; x.textAlign = 'center'; x.textBaseline = 'middle';
+        x.fillText(hStr, 0, 0);
+        x.restore();
+      }
+
+      if(vs.showCutNumbers && p.id){
+        const fsId = Math.min(10 * vs.fontScale, w/3, h/3);
+        if(fsId >= 7){
+          x.save();
+          x.font = 'bold ' + fsId + 'px Arial';
+          x.textAlign = 'center'; x.textBaseline = 'middle';
+          const rad = fsId * 0.85;
+          x.beginPath(); x.arc(a + w/2, b + h/2, rad, 0, Math.PI*2);
+          x.fillStyle = 'rgba(255,255,255,.9)'; x.fill();
+          x.strokeStyle = '#666'; x.lineWidth = 1; x.stroke();
+          x.fillStyle = '#333';
+          x.fillText(String(p.id), a + w/2, b + h/2 + 1);
+          x.restore();
+        }
+      }
+    });
+  }
+
+  if(vs.showOuterDims){
+    const redColor = '#e53935';
+    const dimOff = Math.max(20, Math.min(34, sc * 12));
+    const tick = 4;
+    const dimFs = Math.max(12, Math.min(16, sc * 6 * vs.fontScale));
+
+    x.strokeStyle = redColor; x.fillStyle = redColor; x.lineWidth = 1.2;
+    x.font = 'bold ' + dimFs + 'px Arial';
+
+    const totalW = rotated ? g.SH : g.SW;
+    const totalH = rotated ? g.SW : g.SH;
+
+    const by = oy + sh + dimOff;
+    x.beginPath(); x.moveTo(ox, by); x.lineTo(ox + sw, by); x.stroke();
+    x.beginPath();
+    x.moveTo(ox, by - tick); x.lineTo(ox, by + tick);
+    x.moveTo(ox + sw, by - tick); x.lineTo(ox + sw, by + tick);
+    x.stroke();
+    x.textAlign = 'center'; x.textBaseline = 'top';
+    x.fillText(f1(totalW), ox + sw / 2, by + tick + 2);
+
+    const rx = ox + sw + dimOff;
+    x.beginPath(); x.moveTo(rx, oy); x.lineTo(rx, oy + sh); x.stroke();
+    x.beginPath();
+    x.moveTo(rx - tick, oy); x.lineTo(rx + tick, oy);
+    x.moveTo(rx - tick, oy + sh); x.lineTo(rx + tick, oy + sh);
+    x.stroke();
+    x.save();
+    x.translate(rx + tick + 2, oy + sh / 2);
+    x.rotate(-Math.PI / 2);
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.fillText(f1(totalH), 0, 0);
+    x.restore();
+  }
+}
+
+function drawLayer(i){
+  const c = $('cv' + i), x = c.getContext('2d');
+  const vs = viewState;
+  const g = geo;
+
+  const dispW = vs.rotationLocked ? g.SH : g.SW;
+  const dispH = vs.rotationLocked ? g.SW : g.SH;
+
+  const baseW = 900;
+  const targetW = baseW;
+  const ratio = dispH / dispW;
+  const h = Math.max(300, Math.min(1600, Math.round(targetW * ratio)));
+
+  c.width = targetW;
+  c.height = h;
+  c.style.width = '100%';
+  c.style.height = 'auto';
+
+  x.clearRect(0, 0, c.width, c.height);
+  x.fillStyle = '#fff';
+  x.fillRect(0, 0, c.width, c.height);
+
+  const sideDim = 55 * vs.zoom;
+  const bottomDim = 45 * vs.zoom;
+  const availW = c.width - sideDim * 2;
+  const availH = c.height - bottomDim * 2;
+  const scFit = Math.min(availW / dispW, availH / dispH);
+  const sw = dispW * scFit;
+  const sh = dispH * scFit;
+  const ox = (c.width - sw) / 2 - 15;
+  const oy = (c.height - sh) / 2 - 15;
+
+  drawSheetEx(x, layouts[i], ox, oy, sw, sh, {});
+}
+
+/* ===== أدوات شريط العرض ===== */
+function vbToggle(name){
+  viewState[name] = !viewState[name];
+  updateToolbarUI();
+  redrawAll();
+}
+
+function vbCycleColors(){
+  const schemes = ['pastel','light','dark','mono'];
+  const idx = schemes.indexOf(viewState.colorScheme);
+  viewState.colorScheme = schemes[(idx+1) % schemes.length];
+  updateToolbarUI();
+  redrawAll();
+  toast('🎨 لوحة الألوان: ' + viewState.colorScheme);
+}
+
+function vbZoom(delta){
+  viewState.zoom = Math.max(0.5, Math.min(2.5, viewState.zoom + delta));
+  updateToolbarUI();
+  redrawAll();
+}
+
+function vbFont(delta){
+  viewState.fontScale = Math.max(0.5, Math.min(2.5, viewState.fontScale + delta));
+  updateToolbarUI();
+  redrawAll();
+}
+
+function vbReset(){
+  viewState = {
+    zoom:1, fontScale:1, rotationLocked:false,
+    showOuterDims:true, showInnerDims:true, showLabels:true,
+    colorScheme:'pastel', showCutNumbers:false, flipped:false
+  };
+  updateToolbarUI();
+  redrawAll();
+  toast('⟲ تم إعادة التعيين');
+}
+
+function vbRotate(){
+  viewState.rotationLocked = !viewState.rotationLocked;
+  updateToolbarUI();
+  redrawAll();
+  toast(viewState.rotationLocked ? '🔒 التدوير مفعل (90°)' : '🔓 التدوير غير مفعل');
+}
+
+function redrawAll(){
+  layouts.forEach((_, i) => {
+    drawLayer(i);
+    const c = $('cv' + i);
+    if(c){
+      c.style.width = (viewState.zoom * 100) + '%';
+    }
+  });
+}
+
+function updateToolbarUI(){
+  const vs = viewState;
+  const rotBtn = $('vbRotate');
+  if(rotBtn) rotBtn.classList.toggle('active', vs.rotationLocked);
+
+  const outerBtn = $('vbOuterDims');
+  if(outerBtn) outerBtn.classList.toggle('active', vs.showOuterDims);
+
+  const innerBtn = $('vbInnerDims');
+  if(innerBtn) innerBtn.classList.toggle('active', vs.showInnerDims);
+
+  const labelsBtn = $('vbLabels');
+  if(labelsBtn) labelsBtn.classList.toggle('active', vs.showLabels);
+
+  const cutBtn = $('vbCutNumbers');
+  if(cutBtn) cutBtn.classList.toggle('active', vs.showCutNumbers);
+
+  const zoomVal = $('vbZoomVal');
+  if(zoomVal) zoomVal.textContent = Math.round(vs.zoom * 100) + '%';
+
+  const fontVal = $('vbFontVal');
+  if(fontVal) fontVal.textContent = Math.round(vs.fontScale * 100) + '%';
+}
+
+/* ===== نتائج ===== */
+function cutText(c,k){const g=geo;return (k+1)+': '+(c.d==='H'?'أفقي':'عمودي')+' عند '+f1(c.pos+g.t)+' سم '+(c.d==='H'?'من الأعلى':'من اليسار')+' (طول '+f1(c.len)+')'}
+function totals(){
+ const g=geo,N=layouts.length,raw=g.SW*g.SH*N,used=layouts.reduce((a,l)=>a+l.used,0);
+ return {N,raw,used,waste:100*(1-used/raw),pieces:layouts.reduce((a,l)=>a+l.placed.length,0)};
+}
+function renderResults(){
+ const g=geo,T=totals(),box=$('cutResults');box.innerHTML='';
+ const rem=[];layouts.forEach((l,i)=>l.free.slice(0,4).forEach(f=>rem.push({i,f})));rem.sort((a,b)=>b.f.w*b.f.h-a.f.w*a.f.h);
+
+ const tb = document.createElement('div');
+ tb.className = 'view-toolbar no-print';
+ tb.innerHTML = `
+  <button class="vbtn" id="vbRotate" onclick="vbRotate()" title="تدوير 90°">
+    <span class="material-icons">lock_open</span>
+  </button>
+  <div class="sep"></div>
+  <button class="vbtn" onclick="vbZoom(0.25)" title="تكبير">
+    <span class="material-icons">zoom_in</span>
+  </button>
+  <span class="vlabel" id="vbZoomVal">100%</span>
+  <button class="vbtn" onclick="vbZoom(-0.25)" title="تصغير">
+    <span class="material-icons">zoom_out</span>
+  </button>
+  <button class="vbtn" onclick="vbZoom(0)" title="إعادة ضبط التكبير">
+    <span class="material-icons">zoom_out_map</span>
+  </button>
+  <div class="sep"></div>
+  <button class="vbtn" onclick="vbFont(0.2)" title="تكبير الخط">
+    <span class="aa" style="font-size:18px">A+</span>
+  </button>
+  <span class="vlabel" id="vbFontVal">100%</span>
+  <button class="vbtn" onclick="vbFont(-0.2)" title="تصغير الخط">
+    <span class="aa" style="font-size:14px">A−</span>
+  </button>
+  <div class="sep"></div>
+  <button class="vbtn" onclick="vbCycleColors()" title="تبديل الألوان">
+    <span class="material-icons">palette</span>
+  </button>
+  <button class="vbtn active" id="vbOuterDims" onclick="vbToggle('showOuterDims')" title="إظهار/إخفاء القياسات الخارجية">
+    <span class="material-icons">straighten</span>
+  </button>
+  <button class="vbtn active" id="vbInnerDims" onclick="vbToggle('showInnerDims')" title="إظهار/إخفاء القياسات الداخلية">
+    <span class="material-icons">crop_free</span>
+  </button>
+  <button class="vbtn active" id="vbLabels" onclick="vbToggle('showLabels')" title="إظهار/إخفاء أرقام القياس">
+    <span class="material-icons">label</span>
+  </button>
+  <button class="vbtn" id="vbCutNumbers" onclick="vbToggle('showCutNumbers')" title="إظهار/إخفاء أرقام القطع">
+    <span class="material-icons">format_list_numbered</span>
+  </button>
+  <div class="sep"></div>
+  <button class="vbtn" onclick="vbReset()" title="إعادة تعيين">
+    <span class="material-icons">restart_alt</span>
+  </button>
+ `;
+ box.appendChild(tb);
+
+ const sm=document.createElement('div');sm.className='card';
+ sm.innerHTML=`<div class="stats"><div class="stat"><span>عدد الألواح</span><b>${T.N}</b></div><div class="stat"><span>الاستغلال</span><b>${(100-T.waste).toFixed(1)}%</b></div><div class="stat"><span>الهدر</span><b>${T.waste.toFixed(1)}%</b></div><div class="stat"><span>مساحة الألواح</span><b>${(T.raw/10000).toFixed(2)} م²</b></div></div>
+ <div class="hint">تم اختيار أفضل نتيجة من ${g.tried} استراتيجية، وكل القصات كاملة من حافة لحافة (Guillotine).</div>
+ ${rem.length?`<h3>البقايا المفيدة (أصغر ضلع ≥ ${f1(n('minRem')||20)} سم)</h3><div>${rem.slice(0,12).map(r=>`<span class="chip"><bdi dir="ltr">${f1(r.f.w)} × ${f1(r.f.h)}</bdi> • لوح ${r.i+1}</span>`).join('')}</div>`:''}`;
+ box.appendChild(sm);
+
+ layouts.forEach((L,i)=>{
+  const dispW = viewState.rotationLocked ? g.SH : g.SW;
+  const dispH = viewState.rotationLocked ? g.SW : g.SH;
+  const ratio = dispH / dispW;
+  const ch = Math.max(300, Math.min(1600, Math.round(900 * ratio)));
+  const layer=document.createElement('div');layer.className='layer';
+  layer.innerHTML=`<div class="layerhead"><div><div class="layername">اللوح ${i+1}</div><div class="layerstats">${L.placed.length} قطعة • ${f1(g.SW)} × ${f1(g.SH)} سم • هدر ${(100*(1-L.used/(g.SW*g.SH))).toFixed(1)}%</div></div><span class="pill">${L.cuts.list.length} قصة</span></div>
+  <div class="toolbar"><button onclick="setZoom(${i},.25)">＋</button><button onclick="setZoom(${i},-.25)">−</button><button onclick="setZoom(${i},0)">100%</button><span class="zoomval" id="zv${i}">100%</span></div>
+  <div class="canvasbox"><canvas class="sheetcanvas" id="cv${i}" width="900" height="${ch}" style="width:100%"></canvas></div>
+  <details><summary>ترتيب القص (${L.cuts.list.length})</summary><div class="cuts">${L.cuts.list.map((c,k)=>`<div>${esc(cutText(c,k))}</div>`).join('')||'—'}</div></details>
+  <div class="layeractions"><button onclick="downloadLayer(${i})">حفظ صورة</button><button onclick="printLayer(${i})">طباعة</button><button class="light" onclick="shareLayer(${i})">مشاركة</button><button class="gray" onclick="openLayer(${i})">فتح كبير</button></div>`;
+  box.appendChild(layer);
+  drawLayer(i);
+ });
+
+ updateToolbarUI();
+}
+
+function setZoom(i,d){
+  if(d === 0){ viewState.zoom = 1; }
+  else {
+    viewState.zoom = Math.max(0.5, Math.min(2.5, viewState.zoom + d));
+  }
+  updateToolbarUI();
+  redrawAll();
+}
+
+/* ===== صفحات A4 ===== */
+function rtl(x,s,px,py,font,col,al){x.font=font;x.fillStyle=col||'#17232e';x.textAlign=al||'right';x.direction='rtl';x.textBaseline='alphabetic';x.fillText(s,px,py)}
+function newPage(){const c=document.createElement('canvas');c.width=1240;c.height=1754;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,1240,1754);return [c,x]}
+function header(x,title){
+ x.fillStyle='#0c456d';x.fillRect(0,0,1240,150);
+ rtl(x,$('shop').value||'تفصال الزجاج',1190,68,'bold 44px Arial','#fff');
+ rtl(x,title,1190,118,'28px Arial','#cfe6f5');
+ rtl(x,'الزبون: '+($('customer').value||'—')+($('customerPhone').value?' • '+$('customerPhone').value:''),50,66,'26px Arial','#fff','left');
+ rtl(x,'طلب: '+($('orderNo').value||'—')+' • '+($('date').value||''),50,112,'24px Arial','#cfe6f5','left');
+}
+
+function pageCanvas(i){
+ const L=layouts[i],g=geo,[c,x]=newPage();
+ header(x,'اللوح '+(i+1)+' من '+layouts.length+' • '+$('material').value+' '+$('thick').value);
+ const areaX=40, areaY=170, areaW=1160, areaH=1000;
+ const marginInside = 60;
+ const dispW = viewState.rotationLocked ? g.SH : g.SW;
+ const dispH = viewState.rotationLocked ? g.SW : g.SH;
+ const scFit = Math.min((areaW-marginInside*2)/dispW, (areaH-marginInside*2)/dispH);
+ const sw = dispW*scFit, sh = dispH*scFit;
+ const ox = areaX + (areaW - sw)/2 - 15;
+ const oy = areaY + (areaH - sh)/2 - 15;
+ drawSheetEx(x, L, ox, oy, sw, sh, {});
+ rtl(x,L.placed.length+' قطعة • اللوح '+f1(g.SW)+'×'+f1(g.SH)+' سم • الهدر '+(100*(1-L.used/(g.SW*g.SH))).toFixed(1)+'%'+(g.K?' • kerf '+f1(g.K*10)+' ملم':''),1190,1220,'bold 28px Arial');
+ if(L.free.length)rtl(x,'البقايا: '+L.free.slice(0,6).map(f=>f1(f.w)+'×'+f1(f.h)).join(' ، '),1190,1260,'24px Arial','#8a5a00');
+ rtl(x,'ترتيب القص:',1190,1305,'24px Arial','#465663');
+ const cs=L.cuts.list,cols=Math.min(6,Math.max(1,Math.ceil(cs.length/13))),rp=Math.ceil(cs.length/cols)||1,rh=Math.min(38,400/rp),cw=1160/cols,fs=Math.max(13,Math.min(24,rh*.72,cw/13));
+ cs.forEach((cc,k)=>{const col=Math.floor(k/rp),row=k%rp;rtl(x,cutText(cc,k),1190-col*cw,1345+row*rh,fs+'px Arial','#17232e')});
+ rtl(x,'GlassCut IQ  •  المهندس محمد النعيمي  •  0772 845 9000',50,1730,'18px Arial','#9aa8b3','left');
+ return c;
+}
+
+function summaryCanvas(){
+ const [c,x]=newPage();header(x,'ملخص الطلب');let y=205;
+ const R=(s,col)=>{rtl(x,s,1190,y,'28px Arial',col);y+=44};
+ R('المادة: '+$('material').value+' • السماكة: '+$('thick').value);
+ if($('address').value)R('العنوان: '+$('address').value.replace(/\s+/g,' '));
+ y+=14;x.fillStyle='#f4f7f9';x.fillRect(50,y-34,1140,48);
+ const cx=[1170,1060,620,380];['#','المقاس (عرض × طول)','الكمية','فوت'].forEach((h,k)=>rtl(x,h,cx[k],y,'bold 26px Arial','#17232e'));y+=52;
+ const sorted=[...parts].sort((a,b)=>{
+   const areaA=a.w*a.h, areaB=b.w*b.h;
+   if(Math.abs(areaA-areaB)>0.001) return areaB-areaA;
+   if(Math.abs(b.w-a.w)>0.001) return b.w-a.w;
+   return b.h-a.h;
+ });
+ const rfs=sorted.length>26?22:28,rhh=sorted.length>26?34:44;
+ sorted.slice(0,Math.floor(900/rhh)).forEach((p,i)=>{
+  const v=[String(i+1),f1(p.w)+' × '+f1(p.h),String(p.q),(p.w*p.h*p.q/900).toFixed(2)];
+  v.forEach((s,k)=>{x.direction='ltr';x.textAlign='right';x.font=rfs+'px Arial';x.fillStyle='#17232e';x.fillText(s,cx[k],y)});
+  x.strokeStyle='#e3e9ee';x.beginPath();x.moveTo(50,y+10);x.lineTo(1190,y+10);x.stroke();y+=rhh;
+ });
+ y=Math.max(y+20,1330);
+ const tq=parts.reduce((a,p)=>a+p.q,0),ft=parts.reduce((a,p)=>a+p.w*p.h*p.q,0)/900;
+ R('إجمالي القطع: '+tq+' • إجمالي الفوت: '+ft.toFixed(2));
+ if(layouts.length){const T=totals();R('عدد الألواح: '+T.N+' • الاستغلال '+(100-T.waste).toFixed(1)+'% • الهدر '+T.waste.toFixed(1)+'%','#465663')}
+ rtl(x,'GlassCut IQ  •  المهندس محمد النعيمي  •  0772 845 9000',50,1730,'18px Arial','#9aa8b3','left');
+ return c;
+}
+function allPages(){return [summaryCanvas(),...layouts.map((_,i)=>pageCanvas(i))]}
+function needLayouts(){if(!layouts.length){toast('احسب التفصال أولاً.');return false}return true}
+
+/* ===== PDF ===== */
+function makePDF(cs){
+ const enc=new TextEncoder(),parts=[],xr=[];let off=0;
+ const push=b=>{const u=typeof b==='string'?enc.encode(b):b;parts.push(u);off+=u.length};
+ const obj=(id,body)=>{xr[id]=off;push(id+' 0 obj\n'+body+'\nendobj\n')};
+ push('%PDF-1.4\n');
+ const N=cs.length,kids=cs.map((_,k)=>(5+3*k)+' 0 R').join(' ');
+ obj(1,'<</Type/Catalog/Pages 2 0 R>>');obj(2,'<</Type/Pages/Count '+N+'/Kids['+kids+']>>');
+ cs.forEach((c,k)=>{
+  const b64=c.toDataURL('image/jpeg',.92).split(',')[1],bin=atob(b64),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+  const im=3+3*k,ct=4+3*k,pg=5+3*k,cn='q 595 0 0 842 0 0 cm /Im0 Do Q';
+  xr[im]=off;push(im+' 0 obj\n<</Type/XObject/Subtype/Image/Width '+c.width+'/Height '+c.height+'/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length '+u.length+'>>\nstream\n');push(u);push('\nendstream\nendobj\n');
+  obj(ct,'<</Length '+cn.length+'>>\nstream\n'+cn+'\nendstream');
+  obj(pg,'<</Type/Page/Parent 2 0 R/MediaBox[0 0 595 842]/Resources<</XObject<</Im0 '+im+' 0 R>>>>/Contents '+ct+' 0 R>>');
+ });
+ const tot=3+3*N,xo=off;let t='xref\n0 '+tot+'\n0000000000 65535 f \n';
+ for(let i=1;i<tot;i++)t+=String(xr[i]).padStart(10,'0')+' 00000 n \n';
+ push(t+'trailer\n<</Size '+tot+'/Root 1 0 R>>\nstartxref\n'+xo+'\n%%EOF');
+ return new Blob(parts,{type:'application/pdf'});
+}
+function pdfName(){return 'glasscut-'+($('orderNo').value||$('date').value||'plan').replace(/[^\w\-]/g,'_')+'.pdf'}
+function exportPDF(){if(!needLayouts())return;toast('جاري إنشاء PDF...');setTimeout(()=>{downloadBlob(makePDF(allPages()),pdfName());toast('تم إنشاء PDF.')},50)}
+function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+const toBlob=(c,t)=>new Promise(r=>c.toBlob(r,t||'image/png'));
+async function shareFile(file,fallback){
+ try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({title:'تفصال الزجاج',files:[file]});return}}catch(e){if(e&&e.name==='AbortError')return}
+ downloadBlob(file,file.name);if(fallback)toast(fallback);
+}
+function sharePDF(){if(!needLayouts())return;const b=makePDF(allPages());shareFile(new File([b],pdfName(),{type:'application/pdf'}),'المشاركة غير مدعومة، تم تنزيل الملف.')}
+async function shareLayer(i){const b=await toBlob(pageCanvas(i));shareFile(new File([b],'layer-'+(i+1)+'.png',{type:'image/png'}),'المشاركة غير مدعومة، تم تنزيل الصورة.')}
+async function downloadLayer(i){downloadBlob(await toBlob(pageCanvas(i)),'تفصال-لوح-'+(i+1)+'.png')}
+async function exportAllPNG(){
+ if(!needLayouts())return;const cs=allPages();
+ for(let s=0;s<cs.length;s+=6){
+  const g=cs.slice(s,s+6),cols=Math.min(3,g.length),rows=Math.ceil(g.length/cols),w=744,h=1052,c=document.createElement('canvas');c.width=cols*w;c.height=rows*h;
+  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);g.forEach((p,k)=>x.drawImage(p,(k%cols)*w,Math.floor(k/cols)*h,w,h));
+  downloadBlob(await toBlob(c),'تفصال-كامل-'+(s/6+1)+'.png');
+ }
+}
+function printPages(cs){
+ const html=`<html dir="rtl"><head><style>@page{size:A4;margin:0}body{margin:0}img{width:100%;display:block;page-break-after:always}</style></head><body>${cs.map(c=>'<img src="'+c.toDataURL('image/jpeg',.9)+'">').join('')}</body></html>`;
+ const f=document.createElement('iframe');f.style.cssText='position:fixed;width:0;height:0;border:0;right:0;bottom:0';document.body.appendChild(f);
+ f.onload=()=>setTimeout(()=>{try{f.contentWindow.focus();f.contentWindow.print()}catch(e){toast('تعذرت الطباعة، استخدم تصدير PDF.')}setTimeout(()=>f.remove(),60000)},400);
+ f.srcdoc=html;
+}
+function printLayer(i){printPages([pageCanvas(i)])}
+function printAll(){if(needLayouts())printPages(allPages())}
+function openLayer(i){
+ const o=document.createElement('div');o.className='ov';
+ o.innerHTML='<button class="red" style="position:fixed;top:10px;left:10px;z-index:2">إغلاق ✕</button><img src="'+pageCanvas(i).toDataURL('image/jpeg',.92)+'">';
+ o.onclick=()=>o.remove();document.body.appendChild(o);
+}
+
+/* ===== الحفظ ===== */
+const PK='glasscutiq_projects',DK='glasscutiq_draft';
+function lsGet(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
+function collect(){const d={};FIELDS.forEach(k=>d[k]=$(k).value);d.parts=parts;return d}
+function applyData(d){FIELDS.forEach(k=>{if(d[k]!=null&&$(k))$(k).value=d[k]});parts=(d.parts||[]).map(p=>({w:+p.w,h:+p.h,q:Math.max(1,+p.q||1)})).filter(p=>p.w>0&&p.h>0);renderParts()}
+function dirty(){clearTimeout(dirty.t);dirty.t=setTimeout(()=>lsSet(DK,collect()),500)}
+function save(){
+ const d=collect(),key=(d.orderNo||'')+'|'+(d.customer||'')+'|'+d.date,P=lsGet(PK,{});d.saved=Date.now();P[key]=d;
+ toast(lsSet(PK,P)?'تم حفظ المشروع.':'تعذر الحفظ.');renderProjects();
+}
+function renderProjects(){
+ const P=lsGet(PK,{});projKeys=Object.keys(P).sort((a,b)=>(P[b].saved||0)-(P[a].saved||0));
+ $('projList').innerHTML=projKeys.length?projKeys.map((k,i)=>`<div class="proj"><div><b>${esc(P[k].customer||'بدون اسم')}</b><div class="hint" style="margin:2px 0 0">طلب ${esc(P[k].orderNo||'—')} • ${esc(P[k].date||'')} • ${(P[k].parts||[]).length} مقاس</div></div><div style="display:flex;gap:5px"><button class="light" onclick="loadProj(${i})">فتح</button><button class="red" onclick="delProj(${i})">حذف</button></div></div>`).join(''):'<div class="empty">لا توجد مشاريع محفوظة.</div>';
+}
+function loadProj(i){const d=lsGet(PK,{})[projKeys[i]];if(!d)return;applyData(d);layouts=[];$('cutResults').innerHTML='<div class="card empty">روح لصفحة «التفصال» واضغط «حساب التفصال».</div>';go(2);toast('تم فتح المشروع.')}
+function delProj(i){if(!confirm('حذف هذا المشروع؟'))return;const P=lsGet(PK,{});delete P[projKeys[i]];lsSet(PK,P);renderProjects()}
+function newProject(){
+ if(parts.length&&!confirm('بدء مشروع جديد؟'))return;
+ ['customer','customerPhone','address','orderNo'].forEach(k=>$(k).value='');$('date').value=today();parts=[];layouts=[];
+ $('cutResults').innerHTML='<div class="card empty">روح لصفحة «التفصال» واضغط «حساب التفصال».</div>';renderParts();dirty();go(1);
+ toast('🆕 بدأ مشروع جديد');
+}
+document.addEventListener('input',dirty);document.addEventListener('change',dirty);
+$('date').value=today();
+{const d=lsGet(DK,null);if(d)applyData(d)}
+if(!$('date').value)$('date').value=today();
+renderParts();renderProjects();
+
+/* ================= SELF TEST ================= */
+async function runSelfTest(trials){
+ trials=Math.max(1,Math.min(1000,trials||100));
+ const btn=$('btnSelfTest');
+ if(btn){btn.disabled=true;btn.dataset.old=btn.textContent;btn.textContent='⏳ جاري الفحص...'}
+ await new Promise(r=>setTimeout(r,30));
+ const SW=Math.max(20,n('sheetW')||165),SH=Math.max(20,n('sheetH')||225);
+ const K=Math.max(0,n('kerf'))/10,rot=$('rotation').value==='yes';
+ const W=SW,H=SH;
+ const minDim=Math.min(SW,SH),maxDim=Math.max(SW,SH);
+ const minSize=Math.max(4,Math.min(10,minDim*0.08));
+ const R={pass:0,fail:0,errors:[],totalSheets:0,totalPieces:0,totalWaste:0,totalCuts:0};
+ for(let t=0;t<trials;t++){
+  try{
+   const items=[],seen=new Set();
+   const numTypes=3+Math.floor(Math.random()*6);
+   for(let i=0;i<numTypes;i++){
+    let placed=false;
+    for(let a=0;a<30&&!placed;a++){
+     const r=Math.random();let w,h;
+     if(r<0.25){w=Math.round(SW*(0.05+Math.random()*0.15));h=Math.round(SH*(0.05+Math.random()*0.15))}
+     else if(r<0.5){w=Math.round(SW*(0.15+Math.random()*0.2));h=Math.round(SH*(0.15+Math.random()*0.2))}
+     else if(r<0.75){w=Math.round(SW*(0.25+Math.random()*0.3));h=Math.round(SH*(0.25+Math.random()*0.3))}
+     else if(r<0.9){w=Math.round(SW*(0.45+Math.random()*0.35));h=Math.round(SH*(0.45+Math.random()*0.35))}
+     else{if(Math.random()<0.5){w=Math.round(SW*(0.08+Math.random()*0.15));h=Math.round(SH*(0.5+Math.random()*0.4))}else{w=Math.round(SW*(0.5+Math.random()*0.4));h=Math.round(SH*(0.08+Math.random()*0.15))}}
+     w=Math.max(minSize,Math.min(maxDim,w));h=Math.max(minSize,Math.min(maxDim,h));
+     const fD=(w<=W&&h<=H),fR=rot&&(h<=W&&w<=H);
+     if(!fD&&!fR)continue;
+     if(seen.has(w+'x'+h))continue;
+     seen.add(w+'x'+h);
+     const q=1+Math.floor(Math.random()*3);
+     for(let k=0;k<q;k++)items.push({id:items.length+1,g:i+1,w,h});
+     placed=true;
+    }
+   }
+   if(!items.length){R.pass++;continue}
+   const sheets=solve(items,W,H,K,rot,400);
+   if(!sheets){R.fail++;R.errors.push('T'+t+': فشل ('+items.length+' قطعة)');continue}
+   const pc=sheets.reduce((a,s)=>a+s.placed.length,0);
+   if(pc!==items.length){R.fail++;R.errors.push('T'+t+': '+pc+'/'+items.length+' قطعة');continue}
+   let bad='';
+   for(const s of sheets){
+    for(let i=0;i<s.placed.length;i++){
+     const a=s.placed[i];
+     if(a.x<-E||a.y<-E||a.x+a.w>W+E||a.y+a.h>H+E){bad='خارج اللوح';break}
+     for(let j=i+1;j<s.placed.length;j++){
+      const b=s.placed[j];
+      const overlap=!(a.x+a.w<=b.x+E||b.x+b.w<=a.x+E||a.y+a.h<=b.y+E||b.y+b.h<=a.y+E);
+      if(overlap){bad='تداخل';break}
+     }
+     if(bad)break;
+    }
+    if(bad)break;
+   }
+   if(bad){R.fail++;R.errors.push('T'+t+': '+bad);continue}
+   let cutsOk=true;
+   for(const s of sheets){
+    for(const c of s.cuts){
+     if(c.x1<-E||c.y1<-E||c.x2>W+E||c.y2>H+E){cutsOk=false;break}
+     if(c.d==='H'&&Math.abs(c.y1-c.y2)>E){cutsOk=false;break}
+     if(c.d==='V'&&Math.abs(c.x1-c.x2)>E){cutsOk=false;break}
+    }
+    if(!cutsOk)break;
+   }
+   if(!cutsOk){R.fail++;R.errors.push('T'+t+': قصات غير صحيحة');continue}
+   R.pass++;
+   R.totalSheets+=sheets.length;
+   R.totalPieces+=items.length;
+   R.totalCuts+=sheets.reduce((a,s)=>a+s.cuts.length,0);
+   const rawArea=sheets.length*W*H;
+   const usedArea=items.reduce((a,p)=>a+p.w*p.h,0);
+   R.totalWaste+=(rawArea-usedArea)/rawArea;
+  }catch(e){R.fail++;R.errors.push('T'+t+': '+e.message)}
+ }
+ if(btn){btn.disabled=false;btn.textContent=btn.dataset.old||'فحص المحرك'}
+ const avgWaste=R.pass?(R.totalWaste/R.pass*100).toFixed(2):'—';
+ const avgSheets=R.pass?(R.totalSheets/R.pass).toFixed(2):'—';
+ const avgPieces=R.pass?(R.totalPieces/R.pass).toFixed(1):'—';
+ const avgCuts=R.totalSheets?(R.totalCuts/R.totalSheets).toFixed(1):'—';
+ const box=$('selfTestResult');
+ if(box){
+  box.innerHTML=
+   '<div class="stats">'+
+    '<div class="stat"><span>نجح</span><b style="color:var(--green)">'+R.pass+'</b></div>'+
+    '<div class="stat"><span>فشل</span><b style="color:'+(R.fail?'var(--red)':'var(--muted)')+'">'+R.fail+'</b></div>'+
+    '<div class="stat"><span>متوسط الهدر</span><b>'+avgWaste+'%</b></div>'+
+    '<div class="stat"><span>متوسط الألواح</span><b>'+avgSheets+'</b></div>'+
+   '</div>'+
+   '<div class="hint" style="margin-top:8px">'+
+    'متوسط القطع/محاولة: <b>'+avgPieces+'</b> • متوسط القصات/لوح: <b>'+avgCuts+'</b> • اللوح: <b>'+W+'×'+H+'</b> سم • kerf: <b>'+f1(K*10)+'</b> ملم'+
+   '</div>'+
+   (R.errors.length?
+    '<details style="margin-top:8px"><summary style="color:var(--red)">الأخطاء ('+R.errors.length+')</summary><div class="cuts" style="font-size:11px;max-height:220px;overflow:auto">'+
+     R.errors.slice(0,40).map(function(e){return '<div>'+esc(e)+'</div>'}).join('')+
+    '</div></details>'
+    :
+    '<div class="hint" style="color:var(--green);margin-top:8px;font-weight:800">✅ كل الفحوصات نجحت.</div>');
+ }
+ return R;
+}
+
+/* تعيين الحالة الابتدائية للأزرار السفلية */
+go(1);
+</script>
+</body>
+</html>
